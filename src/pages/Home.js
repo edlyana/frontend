@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import {useWorkoutsContext} from '../hooks/useWorkoutsContext'
 
 // components
@@ -7,6 +7,10 @@ import WorkoutForm from "../components/WorkoutForm"
 
 const Home = () => {
   const {workouts, dispatch} = useWorkoutsContext()
+
+  // Search Function
+  const [searchName, setSearchName] = useState('')
+  const filteredName = workouts ? workouts.filter((workout) => workout.title.toLowerCase().includes(searchName.toLowerCase())) : [];
 
   useEffect(() => {
     const fetchWorkouts = async () => {
@@ -24,8 +28,23 @@ const Home = () => {
 
   return (
     <div className="home">
+      <label style={{fontSize:"20px",color:"#127475"}}>Search Workouts:</label>
+            <input
+                type="text"
+                placeholder="Enter a workout"
+                value={searchName}
+                onChange = {(e) => setSearchName(e.target.value)}
+                style={{
+                    padding: "10px",
+                    fontSize: "16px",
+                    width: "80%",
+                    borderRadius: "5px",
+                    border: "1px solid #127475",
+                }}
+                className="searchBox"
+            />
       <div className="workouts">
-        {workouts && workouts.map(workout => (
+        {filteredName.map(workout => (
           <WorkoutDetails workout={workout} key={workout._id} />
         ))}
       </div>
